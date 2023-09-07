@@ -64,6 +64,15 @@ export class WizardCoderInlineCompletionItemProvider implements vscode.InlineCom
                 if (error) throw new Error(error);
                 var data = response.body.split("///")
                 prediction = data[data.length - 2]
+                if(prediction.includes("```")){
+                    let codeStart = prediction.indexOf("```");
+                    let codeEnd = prediction.indexOf("```", codeStart + 1);
+                    let code = ''
+                    if (codeStart !== -1 && codeEnd !== -1) {
+                        code = prediction.slice(codeStart, codeEnd + 3);
+                        prediction = code.split('\n').slice(1, -1).join('\n');
+                    }
+                }
             })
            completionItems.push({
                 insertText: prediction,
